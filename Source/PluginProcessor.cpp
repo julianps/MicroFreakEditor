@@ -150,6 +150,7 @@ void MicroFreakEditorAudioProcessor::processBlock (AudioBuffer<float>& buffer, M
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
+
     buffer.clear();
     int time;
     MidiMessage m;
@@ -158,23 +159,19 @@ void MicroFreakEditorAudioProcessor::processBlock (AudioBuffer<float>& buffer, M
     // Handles new INCOMING midi messages.
     for (MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);)
     {
-        std::cout<<"Receiving Midi"<<"\r\n";
         if(m.isController()){
             sliderListeners.call ([=] (SliderListener& l){
                 l.handleNewSliderValue(m.getControllerNumber(), m.getControllerValue());
             });
         }
     }
-    
-    
-     //Handles new OUTGOING midi messages.
-     if(!midiOutputMessages.isEmpty())
-     {
-         std::cout<<"Sending Midi"<<"\r\n";
-         midiMessages.swapWith(midiOutputMessages);
-         midiOutputMessages.clear();
-     }
 
+    //Handles new OUTGOING midi messages.
+    if(!midiOutputMessages.isEmpty())
+    {
+        midiMessages.swapWith(midiOutputMessages);
+        midiOutputMessages.clear();
+    }
 }
 
 //==============================================================================

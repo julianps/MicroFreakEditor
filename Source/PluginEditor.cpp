@@ -62,7 +62,8 @@ void MicroFreakEditorAudioProcessorEditor::initializeCutoffSlider()
     cutoffFrequency.onValueChange = [this]
     {
         if(!isUpdating){
-            processor.guiUpdate(cutoffFrequency.getValue());
+            cutoffValue = cutoffFrequency.getValue();
+            processor.guiUpdate(cutoffValue);
         }
     };
     
@@ -80,7 +81,7 @@ void MicroFreakEditorAudioProcessorEditor::handleNewSliderValue(int controlNumbe
 
 
 void MicroFreakEditorAudioProcessorEditor::timerCallback(){
-    if(cutoffFrequency.getValue() != cutoffValue){
+    if(isUpdating && cutoffFrequency.getValue() != cutoffValue){
         cutoffFrequency.setValue(cutoffValue);
         isUpdating = false;
     }
