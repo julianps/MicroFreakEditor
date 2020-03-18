@@ -31,12 +31,7 @@ MicroFreakEditorAudioProcessorEditor::~MicroFreakEditorAudioProcessorEditor()
 //==============================================================================
 void MicroFreakEditorAudioProcessorEditor::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
-
-    g.setColour (Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), Justification::centred, 1);
 }
 
 void MicroFreakEditorAudioProcessorEditor::resized()
@@ -50,7 +45,6 @@ void MicroFreakEditorAudioProcessorEditor::resized()
                               .withX(50)
                               .withY(120)
                               );
-
 }
 
 void MicroFreakEditorAudioProcessorEditor::initializeCutoffSlider()
@@ -67,18 +61,19 @@ void MicroFreakEditorAudioProcessorEditor::initializeCutoffSlider()
     addAndMakeVisible(&cutoffFrequency);
     cutoffFrequency.onValueChange = [this]
     {
-        processor.guiUpdate(cutoffValue);
+        if(!isUpdating){
+            processor.guiUpdate(cutoffFrequency.getValue());
+        }
     };
     
 }
 
 void MicroFreakEditorAudioProcessorEditor::handleNewSliderValue(int controlNumber, double controllerValue)
 {
-    std::cout<<"New incomming midi message"<<"\r\n";
-    
     // Cutoff
     if(controlNumber == 23)
     {
+        isUpdating = true;
         cutoffValue = controllerValue;
     }
 }
@@ -87,6 +82,7 @@ void MicroFreakEditorAudioProcessorEditor::handleNewSliderValue(int controlNumbe
 void MicroFreakEditorAudioProcessorEditor::timerCallback(){
     if(cutoffFrequency.getValue() != cutoffValue){
         cutoffFrequency.setValue(cutoffValue);
+        isUpdating = false;
     }
 }
 

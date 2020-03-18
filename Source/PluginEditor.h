@@ -30,6 +30,7 @@ public:
 
 private:
     double cutoffValue;
+    bool isUpdating;
     Slider cutoffFrequency;
     Label cutoffFrequencyLabel;
     void initializeCutoffSlider();

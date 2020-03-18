@@ -158,13 +158,22 @@ void MicroFreakEditorAudioProcessor::processBlock (AudioBuffer<float>& buffer, M
     // Handles new INCOMING midi messages.
     for (MidiBuffer::Iterator i (midiMessages); i.getNextEvent (m, time);)
     {
-        std::cout<<"Incomming Midi"<<"\r\n";
+        std::cout<<"Receiving Midi"<<"\r\n";
         if(m.isController()){
             sliderListeners.call ([=] (SliderListener& l){
                 l.handleNewSliderValue(m.getControllerNumber(), m.getControllerValue());
             });
         }
     }
+    
+    
+     //Handles new OUTGOING midi messages.
+     if(!midiOutputMessages.isEmpty())
+     {
+         std::cout<<"Sending Midi"<<"\r\n";
+         midiMessages.swapWith(midiOutputMessages);
+         midiOutputMessages.clear();
+     }
 
 }
 
@@ -202,14 +211,12 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void MicroFreakEditorAudioProcessor::guiUpdate(double value)
 {
-    std::cout<<"GUI UPDATE"<<"\r\n";
     auto message = MidiMessage::controllerEvent(6, 23, value);
     addMessageToBuffer(message);
 }
 
 void MicroFreakEditorAudioProcessor::addMessageToBuffer (const MidiMessage& message)
 {
-    std::cout<<"ADD MESSAGE TO BUFFER"<<"\r\n";
     auto timestamp = message.getTimeStamp();
     auto sampleNumber =  (int) (timestamp * sampleRate);
     midiOutputMessages.addEvent (message, sampleNumber);
