@@ -66,7 +66,6 @@ void MicroFreakEditorAudioProcessorEditor::initializeCutoffSlider()
             processor.guiUpdate(cutoffValue);
         }
     };
-    
 }
 
 void MicroFreakEditorAudioProcessorEditor::handleNewSliderValue(int controlNumber, double controllerValue)

@@ -208,7 +208,7 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 void MicroFreakEditorAudioProcessor::guiUpdate(double value)
 {
-    auto message = MidiMessage::controllerEvent(6, 23, value);
+    auto message = MidiMessage::controllerEvent(3, 23, value);
     addMessageToBuffer(message);
 }
 
